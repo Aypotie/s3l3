@@ -19,15 +19,17 @@ template <typename T>
 class Dlist {
 private:
     int len;
-
-public:
     DNode<T>* head;
     DNode<T>* tail;
-
+public:
     Dlist() {
         head = nullptr;
         tail = nullptr;
         len = 0;
+    }
+
+    DNode<T>* getHead() const {
+        return head;
     }
 
     int size() const {
@@ -52,7 +54,7 @@ public:
         DNode<T>* node = new DNode<T>(value);
         if (head == nullptr) {
             head = node;
-            tail = node; // Хвост и голова совпадают
+            tail = node;
         } else {
             DNode<T>* oldHead = head;
             head = node;
@@ -136,39 +138,24 @@ public:
         }
     }
 
-    int findByValue(const T& value) {
+    DNode<T>* findByValue(const T& value) {
         DNode<T>* current = head;
         int c = 0;
         while (current != nullptr) {
             if (current->value == value) {
-                return c;
+                return current;
             }
             current = current->next;
             c++;
         }
-        return -1;
-    }
-
-    string join(char delimiter) {
-        string result;
-        DNode<string>* current = head;
-
-        while (current != nullptr) {
-            result += current->value;
-            if (current->next != nullptr) {
-                result += delimiter;
-            }
-            current = current->next;
-        }
-
-        return result;
+        return nullptr;
     }
 };
 
 
 template <typename T>
 ostream& operator<<(ostream& os, const Dlist<T>& list) {
-    auto head = list.head;
+    auto head = list.getHead;
     while (head != nullptr) {
         os << head->value << " ";
         head = head->next;

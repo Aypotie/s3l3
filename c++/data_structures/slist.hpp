@@ -17,13 +17,16 @@ template <typename T>
 class SList {
 private:
     int len;
-
-public:
     SNode<T>* head;
 
+public:
     SList() {
         head = nullptr;
         len = 0;
+    }
+
+    SNode<T>* getHead() const {
+        return head;
     }
 
     int size() const {
@@ -104,17 +107,17 @@ public:
         }
     }
 
-    int findByValue(const T& value) {
+    SNode<T>* findByValue(const T& value) {
         SNode<T>* current = head;
         int index = 0;
         while (current != nullptr) {
             if (current->value == value) {
-                return index;
+                return current;
             }
             current = current->next;
             index++;
         }
-        return -1;
+        return nullptr;
     }
 
     string join(char delimiter) {
@@ -148,7 +151,7 @@ public:
 
 template <typename T>
 ostream& operator<<(ostream& os, const SList<T>& list) {
-    auto head = list.head;
+    auto head = list.getHead();
     while (head != nullptr) {
         cout << head->value << endl;
         head = head->next;

@@ -13,6 +13,17 @@ private:
     int cap;           // Максимальная емкость
     float loadFactor;  // Коэффициент загрузки
 
+    void extend() {
+        int newCap = cap * 2;
+        T* newData = new T[newCap];
+        for (int i = 0; i < cap; i++) {
+            newData[i] = data[i];
+        }
+        delete[] data;
+        data = newData;
+        cap = newCap;
+    }
+
 public:
     Vector(int initCap = 16, int initLen = 0) {
         cap = initCap;
@@ -25,15 +36,8 @@ public:
         return len;
     }
 
-    void extend() {
-        int newCap = cap * 2;
-        T* newData = new T[newCap];
-        for (int i = 0; i < cap; i++) {
-            newData[i] = data[i];
-        }
-        delete[] data;
-        data = newData;
-        cap = newCap;
+    int capacity() const {
+        return cap;
     }
 
     void pushBack(T value) {
@@ -71,14 +75,6 @@ public:
             throw invalid_argument("invalid index");
         }
         data[index] = value;
-    }
-
-    void reverse() {
-        for (int i = 0; i < len / 2; i++) {
-            T temp = data[i];
-            data[i] = data[len - i - 1];
-            data[len - i - 1] = temp;
-        }
     }
 
     T get(int index) const {

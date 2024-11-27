@@ -263,23 +263,26 @@ AVLTreeNode* AVLTree::unserializeSS(istringstream& ss) {
     return node;
 }
 
-void printAVLTree(string& result, AVLTreeNode* tree, int depth = 0, string prefix = "") {
+void printAVLTree(string& result, AVLTreeNode* tree, int depth = 0, string prefix = "", bool hasSibling = false) {
     if (tree == nullptr) {
         return;
     }
 
+    // Рисуем правое поддерево
     if (tree->right != nullptr) {
-        printAVLTree(result, tree->right, depth + 1, prefix + "\t");
+        printAVLTree(result, tree->right, depth + 1, prefix + (hasSibling ? "│   " : "    "), true);
     }
 
+    // Добавляем текущий узел
     result += prefix;
     if (depth > 0) {
-        result += "└──";
+        result += hasSibling ? "┌──" : "└──";
     }
     result += "[" + to_string(tree->value) + "]\n";
 
+    // Рисуем левое поддерево
     if (tree->left != nullptr) {
-        printAVLTree(result, tree->left, depth + 1, prefix + "\t");
+        printAVLTree(result, tree->left, depth + 1, prefix + (hasSibling ? "│   " : "    "), false);
     }
 }
 

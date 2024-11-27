@@ -162,16 +162,29 @@ public:
     }
 
     string join() {
-        string result = "";
+        vector<pair<string, int>> sorted_items;
 
         for (int i = 0; i < cap; i++) {
             KeyVal* current = data[i];
             while (current != nullptr) {
-                result += current->key + "," + current->value + ";";
+                sorted_items.push_back({current->key, current->value});
                 current = current->next;
             }
         }
-        result = result.substr(0, result.size() - 1);
+
+        sort(sorted_items.begin(), sorted_items.end(), [](const pair<string, int>& a, const pair<string, int>& b) {
+            return a.first < b.first; 
+        });
+
+        string result = "";
+        for (const auto& pair : sorted_items) {
+            result += pair.first + "," + std::to_string(pair.second) + ";";
+        }
+
+        if (!result.empty()) {
+            result = result.substr(0, result.size() - 1);
+        }
+
         return result;
     }
 };

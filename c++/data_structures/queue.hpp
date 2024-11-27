@@ -31,7 +31,7 @@ public:
             throw runtime_error("Queue is empty");
         }
 
-        T dequeued = list.head->value;
+        T dequeued = list.getHead()->value;
         list.removeForward();
 
         return dequeued;

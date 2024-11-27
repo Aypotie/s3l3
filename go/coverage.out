@@ -1,0 +1,27 @@
+mode: set
+my-queue-project/queue.go:23.24,25.2 1 1
+my-queue-project/queue.go:28.43,31.19 2 1
+my-queue-project/queue.go:31.19,34.3 2 1
+my-queue-project/queue.go:34.8,36.3 1 1
+my-queue-project/queue.go:37.2,38.10 2 1
+my-queue-project/queue.go:42.33,43.17 1 1
+my-queue-project/queue.go:43.17,45.3 1 0
+my-queue-project/queue.go:47.2,48.19 2 1
+my-queue-project/queue.go:48.19,50.3 1 1
+my-queue-project/queue.go:50.8,52.3 1 1
+my-queue-project/queue.go:53.2,53.10 1 1
+my-queue-project/queue.go:57.28,59.2 1 1
+my-queue-project/queue.go:62.38,64.2 1 1
+my-queue-project/queue.go:72.24,76.2 1 1
+my-queue-project/queue.go:79.42,81.2 1 1
+my-queue-project/queue.go:84.48,85.19 1 1
+my-queue-project/queue.go:85.19,87.3 1 1
+my-queue-project/queue.go:89.2,92.22 3 1
+my-queue-project/queue.go:96.28,98.2 1 1
+my-queue-project/queue.go:101.33,104.18 3 1
+my-queue-project/queue.go:104.18,107.3 2 1
+my-queue-project/queue.go:108.2,108.15 1 1
+my-queue-project/queue.go:111.13,124.16 8 0
+my-queue-project/queue.go:124.16,126.3 1 0
+my-queue-project/queue.go:126.8,128.3 1 0
+my-queue-project/queue.go:130.2,130.49 1 0

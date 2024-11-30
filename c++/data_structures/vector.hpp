@@ -2,16 +2,17 @@
 #define VECTOR_H
 
 #include <iostream>
+#include <fstream>
 
 using namespace std;
 
 template <typename T>
 class Vector {
 private:
-    T* data;           // Указатель на массив данных
-    int len;           // Текущая длина
-    int cap;           // Максимальная емкость
-    float loadFactor;  // Коэффициент загрузки
+    T* data;           
+    int len;           
+    int cap;           
+    float loadFactor;  
 
     void extend() {
         int newCap = cap * 2;
@@ -83,6 +84,34 @@ public:
         }
 
         return data[index];
+    }
+
+    // Бинарная сериализация
+    void serializeToBinary(string filename) {
+        ofstream outFile(filename, ios::binary);
+        if (!outFile) {
+            throw runtime_error("Unable to open file for binary serialization");
+        }
+        outFile.write(reinterpret_cast<const char*>(&len), sizeof(len));
+        outFile.write(reinterpret_cast<const char*>(data), sizeof(T) * len);
+        outFile.close();
+    }
+
+    void deserializeFromBinary(string filename) {
+        ifstream inFile(filename, ios::binary);
+        if (!inFile) {
+            throw runtime_error("Unable to open file for binary deserialization");
+        }
+        int newLen;
+        inFile.read(reinterpret_cast<char*>(&newLen), sizeof(newLen));
+        if (newLen > cap) {
+            delete[] data;
+            cap = newLen * 2;
+            data = new T[cap];
+        }
+        len = newLen;
+        inFile.read(reinterpret_cast<char*>(data), sizeof(T) * len);
+        inFile.close();
     }
 };
 

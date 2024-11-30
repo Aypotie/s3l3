@@ -31,6 +31,14 @@ public:
         list.removeForward();
         return popped;
     }
+
+    void serializeToBinary(const string& filename) const {
+        list.serializeToBinary(filename);
+    }
+
+    void deserializeFromBinary(const string& filename) {
+        list.deserializeFromBinary(filename);
+    }
 };
 
 template <typename T>

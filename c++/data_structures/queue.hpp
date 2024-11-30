@@ -36,6 +36,14 @@ public:
 
         return dequeued;
     }
+
+    void serializeToBinary(const string& filename) const {
+        list.serializeToBinary(filename);
+    }
+
+    void deserializeFromBinary(const string& filename) {
+        list.deserializeFromBinary(filename);
+    }
 };
 
 template <typename T>

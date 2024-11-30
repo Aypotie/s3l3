@@ -14,6 +14,10 @@ func TestQueue(t *testing.T) {
 	// Проверяем размер очереди
 	assert.Equal(t, q.Size(), 0, "Queue should be empty initially")
 
+	if q.Size() != 0 {
+		t.Fatal("queue not empty")
+	}
+
 	// Добавляем элементы в очередь
 	q.Enqueue(10)
 	q.Enqueue(20)

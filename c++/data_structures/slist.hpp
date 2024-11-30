@@ -146,7 +146,52 @@ public:
             c++;
         }
         return current->value;
-    }   
+    }
+
+    void serializeToBinary(const string& filename) const {
+        ofstream outFile(filename, ios::binary);
+        if (!outFile) {
+            throw runtime_error("Unable to open file for serialization");
+        }
+
+        // Сохраняем длину списка
+        outFile.write(reinterpret_cast<const char*>(&len), sizeof(len));
+
+        // Сохраняем значения узлов
+        SNode<T>* current = head;
+        while (current != nullptr) {
+            outFile.write(reinterpret_cast<const char*>(&current->value), sizeof(T));
+            current = current->next;
+        }
+
+        outFile.close();
+    }
+
+    void deserializeFromBinary(const string& filename) {
+        ifstream inFile(filename, ios::binary);
+        if (!inFile) {
+            throw runtime_error("Unable to open file for deserialization");
+        }
+
+        // Считываем длину списка
+        int newLen;
+        inFile.read(reinterpret_cast<char*>(&newLen), sizeof(newLen));
+
+        // Удаляем текущий список
+        while (len > 0) {
+            removeForward();
+        }
+
+        // Считываем значения и восстанавливаем список
+        for (int i = 0; i < newLen; i++) {
+            T value;
+            inFile.read(reinterpret_cast<char*>(&value), sizeof(T));
+            pushBack(value);
+        }
+
+        inFile.close();
+    }
+
 };
 
 template <typename T>

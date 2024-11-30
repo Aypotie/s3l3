@@ -150,12 +150,56 @@ public:
         }
         return nullptr;
     }
-};
 
+    void serializeToBinary(const string& filename) const {
+        ofstream file(filename, ios::binary);
+        if (!file.is_open()) {
+            throw runtime_error("Could not open file for writing");
+        }
+
+        // Сохраняем длину списка
+        file.write(reinterpret_cast<const char*>(&len), sizeof(len));
+
+        // Сохраняем значения узлов
+        DNode<T>* current = head;
+        while (current != nullptr) {
+            file.write(reinterpret_cast<const char*>(&current->value), sizeof(T));
+            current = current->next;
+        }
+
+        file.close();
+    }
+
+    void deserializeFromBinary(const string& filename) {
+        ifstream file(filename, ios::binary);
+        if (!file.is_open()) {
+            throw runtime_error("Could not open file for reading");
+        }
+
+        // Очищаем текущий список
+        while (len > 0) {
+            removeBack();
+        }
+
+        // Считываем длину списка
+        int newLen;
+        file.read(reinterpret_cast<char*>(&newLen), sizeof(newLen));
+
+        // Считываем значения и добавляем их в список
+        for (int i = 0; i < newLen; i++) {
+            T value;
+            file.read(reinterpret_cast<char*>(&value), sizeof(T));
+            pushBack(value);
+        }
+
+        file.close();
+    }
+
+};
 
 template <typename T>
 ostream& operator<<(ostream& os, const Dlist<T>& list) {
-    auto head = list.getHead;
+    auto head = list.getHead();
     while (head != nullptr) {
         os << head->value << " ";
         head = head->next;

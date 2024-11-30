@@ -4,6 +4,7 @@
 #include <string>
 #include <iostream>
 #include <cstdint>
+#include <vector>
 
 using namespace std;
 
@@ -186,6 +187,78 @@ public:
         }
 
         return result;
+    }
+
+    void serializeToBinary(const string& filename) const {
+        ofstream file(filename, ios::binary);
+        if (!file.is_open()) {
+            throw runtime_error("Could not open file for writing");
+        }
+
+        // Сохраняем количество элементов и емкость
+        file.write(reinterpret_cast<const char*>(&len), sizeof(len));
+        file.write(reinterpret_cast<const char*>(&cap), sizeof(cap));
+
+        for (int i = 0; i < cap; i++) {
+            KeyVal* current = data[i];
+            while (current != nullptr) {
+                size_t keySize = current->key.size();
+                file.write(reinterpret_cast<const char*>(&keySize), sizeof(keySize));
+                file.write(current->key.c_str(), keySize);
+                file.write(reinterpret_cast<const char*>(&current->value), sizeof(T));
+                current = current->next;
+            }
+        }
+
+        file.close();
+    }
+
+    // Метод десериализации
+    void deserializeFromBinary(const string& filename) {
+        ifstream file(filename, ios::binary);
+        if (!file.is_open()) {
+            throw runtime_error("Could not open file for reading");
+        }
+
+        // Очищаем текущую карту
+        for (int i = 0; i < cap; i++) {
+            KeyVal* current = data[i];
+            while (current != nullptr) {
+                KeyVal* next = current->next;
+                delete current;
+                current = next;
+            }
+            data[i] = nullptr;
+        }
+
+        len = 0;
+
+        // Считываем количество элементов и емкость
+        int newLen, newCap;
+        file.read(reinterpret_cast<char*>(&newLen), sizeof(newLen));
+        file.read(reinterpret_cast<char*>(&newCap), sizeof(newCap));
+
+        cap = newCap;
+        len = 0;
+        delete[] data;
+        data = new KeyVal*[cap];
+        for (int i = 0; i < cap; i++) {
+            data[i] = nullptr;
+        }
+
+        // Считываем элементы
+        for (int i = 0; i < newLen; i++) {
+            size_t keySize;
+            file.read(reinterpret_cast<char*>(&keySize), sizeof(keySize));
+            string key(keySize, ' ');
+            file.read(&key[0], keySize);
+
+            T value;
+            file.read(reinterpret_cast<char*>(&value), sizeof(T));
+            put(key, value);
+        }
+
+        file.close();
     }
 };
 

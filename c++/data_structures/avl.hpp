@@ -5,6 +5,7 @@
 #include <iomanip>
 #include <sstream>
 #include <string>
+#include <fstream>
 #include <algorithm>
 
 using namespace std;
@@ -40,6 +41,9 @@ private:
     void serializeNode(AVLTreeNode* node, string& result) const;
     AVLTreeNode* unserializeSS(istringstream& ss);
 
+    void serializeBinaryNode(AVLTreeNode* node, ofstream& out) const;
+    AVLTreeNode* unserializeBinaryNode(ifstream& in);
+
 public:
     AVLTree();                     // Конструктор
     ~AVLTree();                    // Деструктор
@@ -53,6 +57,9 @@ public:
     // Сериализация и десериализация
     string serialize() const;      // Сериализация дерева
     void unserialize(const string& data); // Десериализация дерева
+
+    void serializeBinary(const string& filename) const;
+    void unserializeBinary(const string& filename);
 
     // Печать дерева
     friend ostream& operator<<(ostream& os, const AVLTree& tree);
@@ -262,6 +269,63 @@ AVLTreeNode* AVLTree::unserializeSS(istringstream& ss) {
 
     return node;
 }
+
+void AVLTree::serializeBinaryNode(AVLTreeNode* node, ofstream& out) const {
+    if (node == nullptr) {
+        // Записываем маркер отсутствующего узла
+        int nullMarker = -1;
+        out.write(reinterpret_cast<const char*>(&nullMarker), sizeof(nullMarker));
+        return;
+    }
+
+    // Записываем значение узла
+    out.write(reinterpret_cast<const char*>(&node->value), sizeof(node->value));
+
+    // Рекурсивно сериализуем левое и правое поддерево
+    serializeBinaryNode(node->left, out);
+    serializeBinaryNode(node->right, out);
+}
+
+AVLTreeNode* AVLTree::unserializeBinaryNode(ifstream& in) {
+    int value;
+
+    // Читаем значение узла
+    in.read(reinterpret_cast<char*>(&value), sizeof(value));
+    if (value == -1) {
+        // Если встретили маркер отсутствующего узла, возвращаем nullptr
+        return nullptr;
+    }
+
+    // Создаем новый узел с прочитанным значением
+    AVLTreeNode* node = new AVLTreeNode(value);
+
+    // Рекурсивно восстанавливаем левое и правое поддерево
+    node->left = unserializeBinaryNode(in);
+    node->right = unserializeBinaryNode(in);
+
+    return node;
+}
+
+void AVLTree::serializeBinary(const string& filename) const {
+    ofstream out(filename, ios::binary);
+    if (!out) {
+        throw runtime_error("Failed to open file for binary serialization.");
+    }
+
+    serializeBinaryNode(head, out);
+    out.close();
+}
+
+void AVLTree::unserializeBinary(const string& filename) {
+    ifstream in(filename, ios::binary);
+    if (!in) {
+        throw runtime_error("Failed to open file for binary deserialization.");
+    }
+
+    head = unserializeBinaryNode(in);
+    in.close();
+}
+
 
 void printAVLTree(string& result, AVLTreeNode* tree, int depth = 0, string prefix = "", bool hasSibling = false) {
     if (tree == nullptr) {
